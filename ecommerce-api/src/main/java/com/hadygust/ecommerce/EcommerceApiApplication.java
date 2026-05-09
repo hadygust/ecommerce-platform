@@ -8,9 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EcommerceApiApplication {
 
 	public static void main(String[] args) {
-
-		Product p = new Product();
-
 		SpringApplication.run(EcommerceApiApplication.class, args);
 //		System.out.println("Hello spring boot!");
 	}
