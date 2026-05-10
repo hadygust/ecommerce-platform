@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-@Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     Page<Product> findProductByCategory(String category, Pageable pageable);
     Page<Product> findProductsByNameContainingIgnoreCase(String name, Pageable pageable);

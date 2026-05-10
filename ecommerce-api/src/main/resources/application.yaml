@@ -9,4 +9,5 @@ spring:
     password: ${SPRING_RABBITMQ_PASSWORD:guest}
 
 jwt:
-  secret: ${JWT_SECRET:local_secret}
+  secret: ${JWT_SECRET:localtestkeydopemysupersecretkey123456}
+  expiration: ${JWT_EXPIRATION:3600000}

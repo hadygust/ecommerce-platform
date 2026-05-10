@@ -1,8 +1,7 @@
 package com.hadygust.ecommerce.entity;
 
+import com.hadygust.ecommerce.entity.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +25,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Enum<UserRole> role = UserRole.USER;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

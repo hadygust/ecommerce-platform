@@ -20,6 +20,16 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(WrongCredentialException.class)
+    public ResponseEntity<ErrorResponse> handleWrongCredential(WrongCredentialException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(
+                        ErrorCode.WRONG_CREDENTIAL,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -28,5 +38,7 @@ public class GlobalExceptionHandler {
                         ex.getMessage(),
                         LocalDateTime.now()
                 ));
-    }
+
+            }
+
 }
