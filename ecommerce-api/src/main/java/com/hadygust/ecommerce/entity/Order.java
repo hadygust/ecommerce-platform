@@ -28,11 +28,12 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Enum<OrderStatus> status = OrderStatus.PENDING;
+    private OrderStatus status = OrderStatus.PENDING;
 
     @Column(nullable = false, precision = 14, scale = 2)
     private BigDecimal total;
 
+    @OneToMany(fetch = FetchType.LAZY)
     private List<OrderItem> items = new ArrayList<>();
 
     private LocalDateTime createdAt;

@@ -27,7 +27,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Enum<UserRole> role = UserRole.USER;
+    private UserRole role = UserRole.USER;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
