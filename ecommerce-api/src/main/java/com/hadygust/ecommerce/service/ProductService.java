@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -49,4 +50,18 @@ public class ProductService {
         return products.stream().map(mapper::toResponse).toList();
     }
 
+    public ProductResponse updateProduct(UUID id, CreateProductRequest req) {
+        Product product = repo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        product.setName(req.name());
+        product.setDescription(req.description());
+        product.setPrice(req.price());
+        product.setStock(req.stock());
+        product.setCategory(req.category());
+        return mapper.toResponse(repo.save(product));
+    }
+
+    @Transactional
+    public ProductResponse deleteById(UUID id) {
+        return mapper.toResponse(repo.deleteProductById(id).orElseThrow(() -> new ProductNotFoundException(id)));
+    }
 }

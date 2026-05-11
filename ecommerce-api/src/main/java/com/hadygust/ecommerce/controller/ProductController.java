@@ -34,11 +34,6 @@ public class ProductController {
         return ResponseEntity.ok(service.findByCategoryAndName(page, size, category, search));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductResponse>> getAll(){
-        return ResponseEntity.ok(service.getAll());
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getById(@PathVariable String id){
 //        ProductResponse resp;
@@ -48,5 +43,16 @@ public class ProductController {
 //            ResponseEntity.status(404).body(new ErrorRes)
 //        }
         return ResponseEntity.ok(service.findById(UUID.fromString(id)));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String id,
+                                                         @RequestBody CreateProductRequest req){
+        return ResponseEntity.ok(service.updateProduct(UUID.fromString(id), req));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductResponse> delete(@PathVariable String id){
+        return ResponseEntity.ok(service.deleteById(UUID.fromString(id)));
     }
 }

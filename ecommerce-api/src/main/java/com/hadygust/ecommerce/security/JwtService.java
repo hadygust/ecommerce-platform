@@ -44,10 +44,6 @@ public class JwtService {
         return extractClaims(token).getSubject();
     }
 
-    public UserRole extractRole(String token){
-        UserRole role;
-        return extractClaims(token).get("role", UserRole.class);
-    }
 
     public Boolean isValid(String token, User user){
         return user.getEmail().equals(extractEmail(token));

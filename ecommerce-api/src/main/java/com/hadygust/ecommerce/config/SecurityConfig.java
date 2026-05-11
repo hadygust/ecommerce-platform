@@ -33,7 +33,7 @@ public class SecurityConfig {
 
                         // Product
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
-                        .requestMatchers("/api/v1/products").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/products/**").hasRole("ADMIN")
 
                         // Orders
                         .requestMatchers("/api/v1/orders/**").authenticated()
@@ -49,6 +49,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 }

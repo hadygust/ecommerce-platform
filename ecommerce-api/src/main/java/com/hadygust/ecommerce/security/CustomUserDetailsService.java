@@ -1,7 +1,7 @@
 package com.hadygust.ecommerce.security;
 
 import com.hadygust.ecommerce.entity.User;
-import com.hadygust.ecommerce.exception.UserEmailNotFoundExcecption;
+import com.hadygust.ecommerce.exception.UserEmailNotFoundException;
 import com.hadygust.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = repo.findUserByEmail(email).orElseThrow(() -> new UserEmailNotFoundExcecption(email));
+        User user = repo.findUserByEmail(email).orElseThrow(() -> new UserEmailNotFoundException(email));
         return new CustomUserDetails(user);
     }
 }
