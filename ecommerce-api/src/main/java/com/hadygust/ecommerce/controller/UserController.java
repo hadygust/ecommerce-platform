@@ -18,14 +18,13 @@ public class UserController {
     private final UserService service;
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> me(@AuthenticationPrincipal CustomUserDetails userDetails){
-        return ResponseEntity.ok(service.getUser(userDetails));
+    public ResponseEntity<UserResponse> me(){
+        return ResponseEntity.ok(service.getUser());
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserResponse> updateMe(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                 @RequestBody UserUpdateRequest req){
-        return ResponseEntity.ok(service.updateUser(userDetails, req));
+    public ResponseEntity<UserResponse> updateMe(@RequestBody UserUpdateRequest req){
+        return ResponseEntity.ok(service.updateUser(req));
     }
 
 }

@@ -33,7 +33,7 @@ public class Order {
     @Column(nullable = false, precision = 14, scale = 2)
     private BigDecimal total;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
     private List<OrderItem> items = new ArrayList<>();
 
     private LocalDateTime createdAt;
