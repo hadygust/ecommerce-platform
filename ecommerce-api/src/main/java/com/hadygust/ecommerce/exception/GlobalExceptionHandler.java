@@ -2,6 +2,7 @@ package com.hadygust.ecommerce.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -30,6 +31,36 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(UserEmailNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserEmailNotFound(UserEmailNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        ErrorCode.EMAIL_NOT_FOUND,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOrderNotFound(OrderNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        ErrorCode.ORDER_NOT_FOUND,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(
+                        ErrorCode.ACCESS_DENIED,
+                        ex.getMessage(),
+                        LocalDateTime.now()
+                ));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -38,7 +69,6 @@ public class GlobalExceptionHandler {
                         ex.getMessage(),
                         LocalDateTime.now()
                 ));
-
-            }
+    }
 
 }

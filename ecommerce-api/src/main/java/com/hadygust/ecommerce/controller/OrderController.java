@@ -5,10 +5,10 @@ import com.hadygust.ecommerce.dto.response.OrderResponse;
 import com.hadygust.ecommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +20,15 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest req){
         return ResponseEntity.ok(service.createOrder(req));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<OrderResponse>> getUserOrders(){
+        return ResponseEntity.ok(service.getUserOrders());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> getOrder(@PathVariable UUID id){
+        return ResponseEntity.ok(service.getOrder(id));
     }
 }

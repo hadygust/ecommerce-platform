@@ -1,6 +1,5 @@
 package com.hadygust.ecommerce.dto.response;
 
-import com.hadygust.ecommerce.entity.OrderItem;
 import com.hadygust.ecommerce.entity.enums.OrderStatus;
 
 import java.math.BigDecimal;

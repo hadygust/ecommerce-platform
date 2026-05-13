@@ -1,13 +1,9 @@
 package com.hadygust.ecommerce.mapper;
 
-import com.hadygust.ecommerce.dto.request.CreateOrderRequest;
 import com.hadygust.ecommerce.dto.response.OrderResponse;
 import com.hadygust.ecommerce.entity.Order;
-import com.hadygust.ecommerce.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
