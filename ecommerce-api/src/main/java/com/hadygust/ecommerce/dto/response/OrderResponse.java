@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public record OrderResponse(
         UUID id,
-        UserResponse user,
         OrderStatus status,
         BigDecimal total,
         List<OrderItemResponse> items,

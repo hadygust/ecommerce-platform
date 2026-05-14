@@ -3,10 +3,12 @@ package com.hadygust.ecommerce.service;
 import com.hadygust.ecommerce.dto.request.CreateOrderRequest;
 import com.hadygust.ecommerce.dto.request.OrderItemRequest;
 import com.hadygust.ecommerce.dto.response.OrderResponse;
+import com.hadygust.ecommerce.dto.response.PaginatedResponse;
 import com.hadygust.ecommerce.entity.Order;
 import com.hadygust.ecommerce.entity.OrderItem;
 import com.hadygust.ecommerce.entity.Product;
 import com.hadygust.ecommerce.entity.User;
+import com.hadygust.ecommerce.entity.enums.OrderStatus;
 import com.hadygust.ecommerce.entity.enums.UserRole;
 import com.hadygust.ecommerce.exception.OrderNotFoundException;
 import com.hadygust.ecommerce.exception.ProductNotFoundException;
@@ -17,6 +19,8 @@ import com.hadygust.ecommerce.repository.OrderItemRepository;
 import com.hadygust.ecommerce.repository.OrderRepository;
 import com.hadygust.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,17 +70,76 @@ public class OrderService {
         return mapper.toResponse(saved);
     }
 
-    @Transactional
-    public List<OrderResponse> getUserOrders (){
+    @Transactional(readOnly = true)
+    public PaginatedResponse<OrderResponse> getUserOrders (Integer page, Integer size){
         User user = userUtils.getUser();
 
-        List<Order> orders = repo.findByUserId(user.getId());
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        Page<UUID> orderIds = repo.findOrderIdByUserId(user.getId(), pageable);
 
-        return orders.stream().map(mapper::toResponse).toList();
+        for(UUID id : orderIds){
+            System.out.println("id: " +id);
+        }
+
+        List<Order> orders = repo.findOrdersWithItems(orderIds.toList());
+        System.out.println(orders.size());
+
+        return new PaginatedResponse<>(
+                orders.stream().map(mapper::toResponse).toList(),
+                orderIds.getPageable().getPageNumber(),
+                orderIds.getPageable().getPageSize(),
+                orderIds.getTotalElements(),
+                orderIds.getTotalPages(),
+                orderIds.isFirst(),
+                orderIds.isLast()
+        );
     }
 
     @Transactional(readOnly = true)
     public OrderResponse getOrder(UUID id){
+        Order order = validateOwnerAdmin(id);
+        return mapper.toResponse(order);
+    }
+
+    @Transactional
+    public OrderResponse cancelOrder(UUID id) {
+        Order order = validateOwnerAdmin(id);
+
+        if (!order.getStatus().equals(OrderStatus.PENDING)){
+            throw new IllegalStateException("Order cannot be cancelled");
+        }
+        order.setStatus(OrderStatus.CANCELLED);
+
+        Order saved = repo.save(order);
+        return mapper.toResponse(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public PaginatedResponse<OrderResponse> getAllOrders(Integer page, Integer size){
+
+        User user = userUtils.getUser();
+
+        if(!user.getRole().equals(UserRole.ADMIN)){
+            throw new AccessDeniedException("You are not authorized to do this");
+        }
+
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        Page<UUID> orderIds = repo.findAllOrderId(pageable);
+
+        List<Order> orders = repo.findOrdersWithItems(orderIds.toList());
+
+        return new PaginatedResponse<>(
+                orders.stream().map(mapper::toResponse).toList(),
+                orderIds.getPageable().getPageNumber(),
+                orderIds.getPageable().getPageSize(),
+                orderIds.getTotalElements(),
+                orderIds.getTotalPages(),
+                orderIds.isFirst(),
+                orderIds.isLast()
+        );
+    }
+
+    private Order validateOwnerAdmin(UUID id) {
         User user = userUtils.getUser();
 
         Order order = repo.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
@@ -87,8 +150,16 @@ public class OrderService {
             throw new AccessDeniedException("You are not authorized to view this order");
         }
 
-        return mapper.toResponse(order);
+        return order;
     }
 
+    public OrderStatus getOrderStatus(UUID id) {
+        User user = userUtils.getUser();
 
+        if(!user.getRole().equals(UserRole.ADMIN)){
+            throw new AccessDeniedException("You are not authorized to do this");
+        }
+
+        return repo.findOrderStatus(id).orElseThrow(() -> new OrderNotFoundException(id));
+    }
 }
