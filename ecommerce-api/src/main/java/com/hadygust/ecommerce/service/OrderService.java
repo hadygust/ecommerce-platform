@@ -114,6 +114,14 @@ public class OrderService {
         if (order.getStatus() != OrderStatus.PENDING){
             throw new IllegalStateException("Order cannot be cancelled");
         }
+
+        for (OrderItem item : order.getItems()){
+            Product product = productRepo.findByIdForUpdate(item.getProduct().getId())
+                    .orElseThrow(() -> new ProductNotFoundException(item.getProduct().getId()));
+
+            product.setStock(product.getStock() + item.getQuantity());
+        }
+
         order.setStatus(OrderStatus.CANCELLED);
 
         return mapper.toResponse(order);
