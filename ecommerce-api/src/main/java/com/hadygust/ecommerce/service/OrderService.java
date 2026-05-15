@@ -166,13 +166,17 @@ public class OrderService {
         return order;
     }
 
-    public OrderStatus getOrderStatus(UUID id) {
+    @Transactional
+    public OrderStatus setOrderStatus(UUID id, OrderStatus status) {
         User user = userUtils.getUser();
 
         if(!user.getRole().equals(UserRole.ADMIN)){
             throw new AccessDeniedException("You are not authorized to do this");
         }
 
-        return repo.findOrderStatus(id).orElseThrow(() -> new OrderNotFoundException(id));
+        Order order = repo.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        order.setStatus(status);
+
+        return order.getStatus();
     }
 }
