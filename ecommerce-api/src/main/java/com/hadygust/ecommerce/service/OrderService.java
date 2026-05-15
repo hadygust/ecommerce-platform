@@ -49,8 +49,14 @@ public class OrderService {
         List<OrderItem> items = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItemRequest itemReq : req.items()){
-            // Find related Product
-            Product product = productRepo.findById(itemReq.id()).orElseThrow(() -> new ProductNotFoundException(itemReq.id()));
+            // Find related Product, Validation, & Stock handling
+            Product product = productRepo.findByIdForUpdate(itemReq.id()).orElseThrow(() -> new ProductNotFoundException(itemReq.id()));
+            if (product.getStock() < itemReq.quantity()){
+                throw new IllegalStateException("Insufficient stock");
+            }
+            product.setStock(product.getStock() - item.getQuantity());
+
+            // Item Creation
             OrderItem item = new OrderItem();
             item.setQuantity(itemReq.quantity());
             item.setOrder(order);
