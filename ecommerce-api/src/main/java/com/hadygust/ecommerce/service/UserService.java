@@ -29,6 +29,6 @@ public class UserService {
         user.setEmail(req.email());
         user.setName(req.name());
 
-        return mapper.toResponse(repo.save(user));
+        return mapper.toResponse(user);
     }
 }

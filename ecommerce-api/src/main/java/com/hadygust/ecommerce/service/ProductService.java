@@ -57,7 +57,7 @@ public class ProductService {
         product.setPrice(req.price());
         product.setStock(req.stock());
         product.setCategory(req.category());
-        return mapper.toResponse(repo.save(product));
+        return mapper.toResponse(product);
     }
 
     @Transactional

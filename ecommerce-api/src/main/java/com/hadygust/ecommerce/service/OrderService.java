@@ -105,13 +105,12 @@ public class OrderService {
     public OrderResponse cancelOrder(UUID id) {
         Order order = validateOwnerAdmin(id);
 
-        if (!order.getStatus().equals(OrderStatus.PENDING)){
+        if (order.getStatus() != OrderStatus.PENDING){
             throw new IllegalStateException("Order cannot be cancelled");
         }
         order.setStatus(OrderStatus.CANCELLED);
 
-        Order saved = repo.save(order);
-        return mapper.toResponse(saved);
+        return mapper.toResponse(order);
     }
 
     @Transactional(readOnly = true)
