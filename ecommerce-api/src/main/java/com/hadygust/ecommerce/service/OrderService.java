@@ -54,7 +54,7 @@ public class OrderService {
             if (product.getStock() < itemReq.quantity()){
                 throw new IllegalStateException("Insufficient stock");
             }
-            product.setStock(product.getStock() - item.getQuantity());
+            product.setStock(product.getStock() - itemReq.quantity());
 
             // Item Creation
             OrderItem item = new OrderItem();
