@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: ecommerce-api
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/ecommerce_db}
     username: ${SPRING_DATASOURCE_USERNAME:ecom_user}
