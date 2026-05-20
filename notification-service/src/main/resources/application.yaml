@@ -16,7 +16,7 @@ notification:
   exchange: ecommerce.events
   queues:
     order-placed: notification.order.placed
-    order-status-changeed: notification.order.status.changed
+    order-status-changed: notification.order.status.changed
   routing-keys:
     order-placed: order.placed
-    order-status-changeed: order.status.changed
+    order-status-changed: order.status.changed
