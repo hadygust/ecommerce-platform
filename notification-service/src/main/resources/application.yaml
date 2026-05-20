@@ -12,3 +12,11 @@ spring:
     username: ${SPRING_RABBITMQ_USERNAME:guest}
     password: ${SPRING_RABBITMQ_PASSWORD:guest}
 
+notification:
+  exchange: ecommerce.events
+  queues:
+    order-placed: notification.order.placed
+    order-status-changeed: notification.order.status.changed
+  routing-keys:
+    order-placed: order.placed
+    order-status-changeed: order.status.changed

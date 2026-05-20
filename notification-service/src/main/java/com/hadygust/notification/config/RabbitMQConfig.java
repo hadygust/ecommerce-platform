@@ -5,6 +5,7 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,20 +13,23 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
 
-    private String exchange = "ecommerce.events";
+    @Value("${notification.exchange}")
+    private String exchange;
 
-    private String orderPlacedQueue = "notification.order.placed";
+    @Value("${notification.queues.order-placed}")
+    private String orderPlacedQueue;
 
-    private String orderStatusChangedQueue = "notification.order.status.changed";
+    @Value("${notification.queues.order-status-changed}")
+    private String orderStatusChangedQueue;
 
-    private String orderPlacedRoutingKey = "order.placed";
+    @Value("${notification.routing-keys.order-placed}")
+    private String orderPlacedRoutingKey;
 
-    private String orderStatusChangedRoutingKey = "order.status.changed";
-
+    @Value("${notification.routing-keys.order-status-changed}")
+    private String orderStatusChangedRoutingKey;
 
 
     // Exchange
-
     @Bean
     public TopicExchange exchange(){
         return new TopicExchange(exchange);
