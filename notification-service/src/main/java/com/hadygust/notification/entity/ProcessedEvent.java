@@ -21,5 +21,5 @@ public class ProcessedEvent {
     private UUID eventId;
 
     @Column(name = "processed_at")
-    private LocalDateTime processedAt;
+    private LocalDateTime processedAt = LocalDateTime.now();
 }
