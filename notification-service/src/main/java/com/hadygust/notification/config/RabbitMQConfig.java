@@ -1,13 +1,14 @@
 package com.hadygust.notification.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class RabbitMQConfig {
@@ -39,12 +40,12 @@ public class RabbitMQConfig {
     // Queue
     @Bean
     public Queue orderPlacedQueue(){
-        return new Queue(orderPlacedQueue);
+        return QueueBuilder.durable(orderPlacedQueue).build();
     }
 
     @Bean
     public Queue orderStatusChangedQueue(){
-        return new Queue(orderStatusChangedQueue);
+        return QueueBuilder.durable(orderStatusChangedQueue).build();
     }
 
     // Binding
@@ -59,8 +60,11 @@ public class RabbitMQConfig {
 
     // Jackson
     @Bean
-    public Jackson2JsonMessageConverter converter(){
-        return new Jackson2JsonMessageConverter();
+    @Primary
+    public ObjectMapper objectMapper(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return objectMapper;
     }
-
 }

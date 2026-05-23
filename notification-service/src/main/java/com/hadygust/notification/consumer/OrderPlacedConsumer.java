@@ -19,7 +19,7 @@ public class OrderPlacedConsumer {
     private final NotificationService service;
 
     @RabbitListener(
-            queues = "asd",
+            queues = "${notification.queues.order-placed}",
             containerFactory = "rabbitListenerContainerFactory"
     )
     public void handleOrderPlaced(OrderPlacedEvent event, Message message, Channel channel) throws IOException {
