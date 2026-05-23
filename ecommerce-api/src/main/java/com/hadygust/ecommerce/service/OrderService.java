@@ -1,5 +1,6 @@
 package com.hadygust.ecommerce.service;
 
+import com.hadygust.ecommerce.dto.event.OrderPlacedEvent;
 import com.hadygust.ecommerce.dto.request.CreateOrderRequest;
 import com.hadygust.ecommerce.dto.request.OrderItemRequest;
 import com.hadygust.ecommerce.dto.response.OrderResponse;
@@ -13,9 +14,8 @@ import com.hadygust.ecommerce.entity.enums.UserRole;
 import com.hadygust.ecommerce.exception.OrderNotFoundException;
 import com.hadygust.ecommerce.exception.ProductNotFoundException;
 import com.hadygust.ecommerce.helper.UserUtils;
-import com.hadygust.ecommerce.mapper.OrderItemMapper;
 import com.hadygust.ecommerce.mapper.OrderMapper;
-import com.hadygust.ecommerce.repository.OrderItemRepository;
+import com.hadygust.ecommerce.messaging.OrderEventPublisher;
 import com.hadygust.ecommerce.repository.OrderRepository;
 import com.hadygust.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,16 +38,16 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository repo;
-    private final OrderItemRepository itemRepo;
     private final ProductRepository productRepo;
     private final OrderMapper mapper;
-    private final OrderItemMapper itemMapper;
     private final UserUtils userUtils;
+    private final OrderEventPublisher orderEventPublisher;
 
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest req){
         Order order = new Order();
-        order.setUser(userUtils.getUser());
+        User user = userUtils.getUser();
+        order.setUser(user);
 
         List<OrderItem> items = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
@@ -72,6 +75,32 @@ public class OrderService {
         order.setTotal(total);
 
         Order saved = repo.save(order);
+
+        List<OrderPlacedEvent.OrderItem> eventItems = items
+                .stream()
+                .map(
+                        item -> new OrderPlacedEvent.OrderItem(item.getProduct().getName(), item.getQuantity(), item.getUnitPrice())
+                ).toList();
+
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        orderEventPublisher.publishOrderPlaced(new OrderPlacedEvent(
+                                UUID.randomUUID(),
+                                "ORDER_PLACED",
+                                LocalDateTime.now(),
+                                saved.getId(),
+                                user.getId(),
+                                user.getEmail(),
+                                user.getName(),
+                                saved.getTotal(),
+                                eventItems
+                        ));
+                    }
+                }
+        );
+
 
         return mapper.toResponse(saved);
     }

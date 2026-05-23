@@ -1,6 +1,7 @@
 package com.hadygust.ecommerce.mapper;
 
 
+import com.hadygust.ecommerce.dto.event.OrderPlacedEvent;
 import com.hadygust.ecommerce.dto.request.OrderItemRequest;
 import com.hadygust.ecommerce.dto.response.OrderItemResponse;
 import com.hadygust.ecommerce.entity.OrderItem;
@@ -20,6 +21,10 @@ public class OrderItemMapper {
                 item.getQuantity(),
                 item.getUnitPrice()
         );
+    }
+
+    public OrderPlacedEvent.OrderItem toEventItem(OrderItem item){
+        return new OrderPlacedEvent.OrderItem(item.getProduct().getName(), item.getQuantity(), item.getUnitPrice());
     }
 
 }
