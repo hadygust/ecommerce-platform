@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -56,7 +57,7 @@ public class NotificationService {
     }
 
     public Boolean isDuplicate(UUID eventId){
-        return eventId != null && processedEventRepo.existsByEventId(eventId);
+        return eventId != null && processedEventRepo.existsById(eventId);
     }
 
     public Notification createPendingNotification(UUID userId, String userEmail, Notification.EventType eventType, String payload){
@@ -73,7 +74,7 @@ public class NotificationService {
 
     private void markNotifSent(Notification notification){
         notification.setStatus(Notification.EventStatus.SENT);
-        notification.setSentAt(LocalDateTime.now());
+        notification.setSentAt(Instant.now());
         repo.save(notification);
     }
 
