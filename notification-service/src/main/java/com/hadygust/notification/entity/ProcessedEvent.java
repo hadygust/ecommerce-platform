@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.context.annotation.Primary;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,5 +22,5 @@ public class ProcessedEvent {
     private UUID eventId;
 
     @Column(name = "processed_at")
-    private LocalDateTime processedAt = LocalDateTime.now();
+    private Instant processedAt = Instant.now();
 }
