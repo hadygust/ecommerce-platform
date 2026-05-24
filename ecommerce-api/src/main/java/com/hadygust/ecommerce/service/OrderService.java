@@ -28,6 +28,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +90,7 @@ public class OrderService {
                         orderEventPublisher.publishOrderPlaced(new OrderPlacedEvent(
                                 UUID.randomUUID(),
                                 "ORDER_PLACED",
-                                LocalDateTime.now(),
+                                Instant.now(),
                                 saved.getId(),
                                 user.getId(),
                                 user.getEmail(),

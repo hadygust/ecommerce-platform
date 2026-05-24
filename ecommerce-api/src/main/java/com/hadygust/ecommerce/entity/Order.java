@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +37,17 @@ public class Order {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
     private List<OrderItem> items = new ArrayList<>();
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     @PrePersist
     protected void onCreate(){
-        createdAt = updatedAt = LocalDateTime.now();
+        createdAt = updatedAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate(){
-        updatedAt = LocalDateTime.now();
+        updatedAt = Instant.now();
     }
 
     public void addItems(OrderItem item){

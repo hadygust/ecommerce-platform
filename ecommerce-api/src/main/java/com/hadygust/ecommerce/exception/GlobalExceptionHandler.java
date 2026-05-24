@@ -6,6 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
@@ -17,7 +18,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         ErrorCode.PRODUCT_NOT_FOUND,
                         ex.getMessage(),
-                        LocalDateTime.now()
+                        Instant.now()
                 ));
     }
 
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         ErrorCode.WRONG_CREDENTIAL,
                         ex.getMessage(),
-                        LocalDateTime.now()
+                        Instant.now()
                 ));
     }
 
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         ErrorCode.EMAIL_NOT_FOUND,
                         ex.getMessage(),
-                        LocalDateTime.now()
+                        Instant.now()
                 ));
     }
 
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         ErrorCode.ORDER_NOT_FOUND,
                         ex.getMessage(),
-                        LocalDateTime.now()
+                        Instant.now()
                 ));
     }
 
@@ -57,7 +58,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         ErrorCode.ACCESS_DENIED,
                         ex.getMessage(),
-                        LocalDateTime.now()
+                        Instant.now()
                 ));
     }
 
@@ -67,7 +68,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         ErrorCode.ILLEGAL_ORDER_STATE,
                         ex.getMessage(),
-                        LocalDateTime.now()
+                        Instant.now()
                 ));
     }
 
@@ -77,7 +78,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(
                         ErrorCode.INTERNAL_ERROR,
                         ex.getMessage(),
-                        LocalDateTime.now()
+                        Instant.now()
                 ));
     }
 

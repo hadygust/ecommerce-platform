@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -33,17 +34,17 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     @PrePersist
     public void onCreate(){
-        createdAt = updatedAt = LocalDateTime.now();
+        createdAt = updatedAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate(){
-        updatedAt = LocalDateTime.now();
+        updatedAt = Instant.now();
     }
 
 }

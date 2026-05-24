@@ -3,6 +3,7 @@ package com.hadygust.ecommerce.dto.response;
 import com.hadygust.ecommerce.entity.enums.OrderStatus;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -12,5 +13,5 @@ public record OrderResponse(
         OrderStatus status,
         BigDecimal total,
         List<OrderItemResponse> items,
-        LocalDateTime createdAt
+        Instant createdAt
 ) {}
